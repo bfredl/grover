@@ -175,24 +175,30 @@ with tf.Session(config=tf_config, graph=tf.Graph()) as sess:
 
         out = gens[0].strip()
 
-        try:
+        if all(ord(x) < 128 for x in out):
+            print(out)
+
+
+        else:
         #if True:
             # well, fukk
             a = out
-            b = a.encode("cp1252") # or latin-1?? who knows??
+            try:
+                b = a.encode("cp1252") # or latin-1?? who knows??
+            except:
+                print("[[MEGAFAIL]]:")
+                print(out + "\n")
+                b = a.encode("cp1252", errors='ignore') # or latin-1?? who knows??
+
             c = b.decode("utf-8", errors='ignore')
             print("[[ONE]]:\n")
             print(c)
-            if any(ord(x) >= 128 for x in c):
-                try:
-                    print("\n[[TWO]]:\n")
-                    d = c.encode("cp1252")
-                    e = d.decode("utf-8", errors='replace')
-                    print(e)
-                except:
-                    pass
-        except:
-            print("[[MEGAAFAIL]]")
-            print(out)
+            try:
+                print("\n[[TWO]]:\n")
+                d = c.encode("cp1252")
+                e = d.decode("utf-8", errors='replace')
+                print(e)
+            except:
+                pass
 
 
