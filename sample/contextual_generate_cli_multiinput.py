@@ -6,6 +6,8 @@ import numpy as np
 import sys
 import json
 import sys
+import ftfy
+import re
 
 sys.path.append('../')
 from lm.modeling import GroverModel, GroverConfig, _top_p_sample, sample
@@ -182,23 +184,14 @@ with tf.Session(config=tf_config, graph=tf.Graph()) as sess:
         else:
         #if True:
             # well, fukk
-            a = out
-            try:
-                b = a.encode("cp1252") # or latin-1?? who knows??
-            except:
-                print("[[MEGAFAIL]]:")
-                print(out + "\n")
-                b = a.encode("cp1252", errors='ignore') # or latin-1?? who knows??
+            print("[[RAW]]:")
+            print(out + "\n")
 
-            c = b.decode("utf-8", errors='ignore')
-            print("[[ONE]]:\n")
-            print(c)
-            try:
-                print("\n[[TWO]]:\n")
-                d = c.encode("cp1252")
-                e = d.decode("utf-8", errors='replace')
-                print(e)
-            except:
-                pass
+            segs = re.split(r'([ .][\x00-\x7F]+)', out)
+            neusegs = [ftfy.fix_text(s) for s in segs]
+            new = ''.join(neusegs)
 
+            if new != out:
+                print("\n[[FTFY]]:")
+                print(new + "\n")
 
