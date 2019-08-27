@@ -389,12 +389,12 @@ def format_context(encoder, news_article, target):
             metadata = news_article.get('title', '')  # Just copy from the title maybe?
 
         if metadata:
-            tokens.append(encoder.__dict__[f'begin_{metadata_category}'])
+            tokens.append(encoder.__dict__['begin_{metadata_category}'.format(metadata_category=metadata_category)])
             tokens.extend(encoder.encode(metadata))
-            tokens.append(encoder.__dict__[f'end_{metadata_category}'])
+            tokens.append(encoder.__dict__['end_{metadata_category}'.format(metadata_category=metadata_category)])
 
     assert target in (canonical_metadata_order + ['summary'])
-    tokens.append(encoder.__dict__[f'begin_{target}'])
+    tokens.append(encoder.__dict__['begin_{target}'.format(target=target)])
     return tokens
 
 def extract_generated_target(output_tokens, encoder, target):
